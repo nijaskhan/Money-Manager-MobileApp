@@ -8,7 +8,7 @@ class ScreenTransaction extends StatelessWidget {
     return Container(
       color: Colors.grey.shade200,
         child: Padding(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: ListView.separated(
           itemBuilder: (ctx, index) {
             return const Card(

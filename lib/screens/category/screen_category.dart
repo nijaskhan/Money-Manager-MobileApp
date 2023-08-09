@@ -13,7 +13,9 @@ class _ScreenCategoryState extends State<ScreenCategory>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  @override
   void initState() {
+    super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -24,12 +26,12 @@ class _ScreenCategoryState extends State<ScreenCategory>
         labelColor: Colors.black,
         indicatorColor: Colors.indigo,
         controller: _tabController,
-        tabs: [Tab(text: 'INCOME'), Tab(text: 'EXPENSE')],
+        tabs: const [Tab(text: 'INCOME',), Tab(text: 'EXPENSE')],
       ),
       Expanded(
         child: TabBarView(
             controller: _tabController,
-            children: [
+            children: const [
               IncomeCategoryList(),
               ExpenseCategoryList(),
             ]),

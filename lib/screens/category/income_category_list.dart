@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class IncomeCategoryList extends StatelessWidget {
@@ -12,7 +11,7 @@ class IncomeCategoryList extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(3, 3, 3, 0),
           child: Card(
             elevation: 1,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: ListTile(
               title: Text("income category ${index+1}"),
