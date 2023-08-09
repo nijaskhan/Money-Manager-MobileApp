@@ -13,7 +13,7 @@ enum CategoryType {
 @HiveType(typeId: 1)
 class CategoryModel {
   @HiveField(0)
-  final int id;
+  final String id;
 
   @HiveField(1)
   final String name;
@@ -25,4 +25,9 @@ class CategoryModel {
   final CategoryType type;
 
   CategoryModel({required this.id, required this.name, required this.type, this.isDeleted=false});
+
+  @override
+  String toString() {
+    return '$name $type $id $isDeleted';
+  }
 }

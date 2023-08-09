@@ -6,6 +6,7 @@ const categoryDbName = 'category-database';
 abstract class CategoryDbFunc {
 
   Future<void> insertCategory(CategoryModel value);
+  Future<List<CategoryModel>> getCategories();
 }
 
 class CategoryDB implements CategoryDbFunc{
@@ -13,5 +14,11 @@ class CategoryDB implements CategoryDbFunc{
   Future<void> insertCategory(CategoryModel value) async{
     final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
     _categoryDB.add(value);
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategories() async{
+    final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
+    return _categoryDB.values.toList();
   }
 }

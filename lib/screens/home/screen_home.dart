@@ -40,9 +40,12 @@ class ScreenHome extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            selectedIndexNotifier.value == 0
-                ? print("transaction page")
-                : print("category page");
+            if(selectedIndexNotifier.value == 0){
+              print("transactions");
+            }else{
+
+              // CategoryDB().insertCategory(_sample);
+            }
           },
           backgroundColor: Colors.indigo,
           child: const Icon(Icons.add),
