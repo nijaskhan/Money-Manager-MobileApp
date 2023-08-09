@@ -18,8 +18,7 @@ class MoneyManagerBotttomNavigation extends StatelessWidget {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Transactions'),
             BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Category')
           ],
-          selectedItemColor: Colors.indigo,
-          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors.indigo
         );
       },
     );

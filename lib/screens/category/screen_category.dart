@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_management_project/screens/category/expense_category_list.dart';
+import 'package:money_management_project/screens/category/income_category_list.dart';
 
 class ScreenCategory extends StatefulWidget {
   const ScreenCategory({super.key});
@@ -7,10 +9,11 @@ class ScreenCategory extends StatefulWidget {
   State<ScreenCategory> createState() => _ScreenCategoryState();
 }
 
-class _ScreenCategoryState extends State<ScreenCategory> with SingleTickerProviderStateMixin {
+class _ScreenCategoryState extends State<ScreenCategory>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  void initState(){
+  void initState() {
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -21,10 +24,15 @@ class _ScreenCategoryState extends State<ScreenCategory> with SingleTickerProvid
         labelColor: Colors.black,
         indicatorColor: Colors.indigo,
         controller: _tabController,
-        tabs: [
-          Tab(text: 'INCOME'),
-          Tab(text: 'EXPENSE')
-        ],
+        tabs: [Tab(text: 'INCOME'), Tab(text: 'EXPENSE')],
+      ),
+      Expanded(
+        child: TabBarView(
+            controller: _tabController,
+            children: [
+              IncomeCategoryList(),
+              ExpenseCategoryList(),
+            ]),
       ),
     ]);
   }
