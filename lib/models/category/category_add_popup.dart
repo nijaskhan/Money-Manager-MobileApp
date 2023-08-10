@@ -53,8 +53,9 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
                       backgroundColor: Colors.green.shade300,
                     ));
                     Navigator.of(ctx).pop();
+                    _categoryNameTextController.text="";
                   },
-                  child: Text('add category')),
+                  child: const Text('add category')),
             )
           ],
         );
@@ -82,7 +83,6 @@ class RadioButton extends StatelessWidget {
                     if (value == null) {
                       return;
                     }
-                    print(value);
                     selectedCategoryNotifier.value = value;
                     selectedCategoryNotifier.notifyListeners();
                   }),
