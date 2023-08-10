@@ -12,6 +12,11 @@ class ExpenseCategoryList extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: expenseCategoryListListener,
         builder: (BuildContext ctx, List<CategoryModel> newList, Widget? _) {
+          if(newList.isEmpty){
+            return Center(
+              child: Image.network('http://www.fam-kurtze.de/nodata.png'),
+            );
+          }
           return ListView.separated(
             itemBuilder: (ctx, index) {
               final category = newList[index];
