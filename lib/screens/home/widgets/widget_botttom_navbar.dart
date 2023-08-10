@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_project/screens/home/screen_home.dart';
 
-class MoneyManagerBotttomNavigation extends StatelessWidget {
-  const MoneyManagerBotttomNavigation({super.key});
+class MoneyManagerBottomNavigation extends StatelessWidget {
+  const MoneyManagerBottomNavigation({super.key});
 
   @override
   Widget build(BuildContext context) {

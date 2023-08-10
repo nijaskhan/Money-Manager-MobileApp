@@ -1,7 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:money_management_project/models/category/category_model.dart';
 
 const categoryDbName = 'category-database';
+
+ValueNotifier<List<CategoryModel>> incomeCategoryListListener = ValueNotifier([]);
+ValueNotifier<List<CategoryModel>> expenseCategoryListListener = ValueNotifier([]);
 
 abstract class CategoryDbFunc {
 
@@ -10,15 +14,42 @@ abstract class CategoryDbFunc {
 }
 
 class CategoryDB implements CategoryDbFunc{
+  // creating a single object for all instance from this class
+  CategoryDB._internal();
+
+  static CategoryDB instance = CategoryDB._internal();
+  factory CategoryDB(){
+    return instance;
+  }
+
   @override
   Future<void> insertCategory(CategoryModel value) async{
     final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
     _categoryDB.add(value);
+    refreshCategoryUI();
   }
 
   @override
   Future<List<CategoryModel>> getCategories() async{
     final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
     return _categoryDB.values.toList();
+  }
+
+  @override
+  Future<void> refreshCategoryUI() async{
+    final _allCategories = await getCategories();
+    incomeCategoryListListener.value.clear();
+    expenseCategoryListListener.value.clear();
+
+    await Future.forEach(_allCategories, (CategoryModel category) {
+      if(category.type == CategoryType.income){
+        incomeCategoryListListener.value.add(category);
+      }else{
+        expenseCategoryListListener.value.add(category);
+      }
+    });
+
+    incomeCategoryListListener.notifyListeners();
+    expenseCategoryListListener.notifyListeners();
   }
 }
