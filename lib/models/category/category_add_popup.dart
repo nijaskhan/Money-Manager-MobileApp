@@ -7,27 +7,26 @@ ValueNotifier<CategoryType> selectedCategoryNotifier =
 
 final _categoryNameTextController = TextEditingController();
 
-
 Future<void> showCategoryAddPopup(BuildContext context) async {
   showDialog(
       context: context,
       builder: (ctx) {
         return SimpleDialog(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(11))),
           title: const Text('Add Category'),
           children: [
             Padding(
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: TextFormField(
                 controller: _categoryNameTextController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'category name',
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Row(
                 children: [
@@ -37,22 +36,22 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
+              padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: ElevatedButton(
                   onPressed: () {
                     final _category = CategoryModel(
                         id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: _categoryNameTextController.text,
-                        type: selectedCategoryNotifier.value
-                    );
+                        type: selectedCategoryNotifier.value);
                     CategoryDB().insertCategory(_category);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        behavior: SnackBarBehavior.fixed,
-                        content: Text('category added', style: TextStyle(fontWeight: FontWeight.bold)),
-                        backgroundColor: Colors.green.shade300,
-                      )
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      behavior: SnackBarBehavior.fixed,
+                      content: Text(
+                          '${_categoryNameTextController.text} added '
+                          'as ${selectedCategoryNotifier.value == CategoryType.income ? "income" : "expense"}',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      backgroundColor: Colors.green.shade300,
+                    ));
                     Navigator.of(ctx).pop();
                   },
                   child: Text('add category')),
@@ -80,7 +79,7 @@ class RadioButton extends StatelessWidget {
                   value: type,
                   groupValue: newCategory,
                   onChanged: (value) {
-                    if(value==null){
+                    if (value == null) {
                       return;
                     }
                     print(value);

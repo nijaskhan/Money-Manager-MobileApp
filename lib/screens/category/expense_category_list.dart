@@ -24,7 +24,7 @@ class ExpenseCategoryList extends StatelessWidget {
                   child: ListTile(
                     title: Text(category.name),
                     trailing: IconButton(onPressed: (){
-                      print("delete button pressed");
+                      CategoryDB.instance.deleteCategory(category.id);
                     }, icon: const Icon(Icons.delete)),
                   ),
                 ),

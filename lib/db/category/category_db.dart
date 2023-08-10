@@ -25,7 +25,8 @@ class CategoryDB implements CategoryDbFunc{
   @override
   Future<void> insertCategory(CategoryModel value) async{
     final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
-    _categoryDB.add(value);
+    // _categoryDB.add(value);  the id is auto-adding in this line
+    _categoryDB.put(value.id, value);   //we are setting the id aas our given id from value.id
     refreshCategoryUI();
   }
 
@@ -51,5 +52,12 @@ class CategoryDB implements CategoryDbFunc{
 
     incomeCategoryListListener.notifyListeners();
     expenseCategoryListListener.notifyListeners();
+  }
+
+  @override
+  Future<void> deleteCategory(String id) async{
+    final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
+    _categoryDB.delete(id);
+    refreshCategoryUI();
   }
 }
