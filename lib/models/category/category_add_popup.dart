@@ -46,6 +46,7 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
                     CategoryDB().insertCategory(_category);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.fixed,
+                      duration: const Duration(seconds: 3),
                       content: Text(
                           '${_categoryNameTextController.text} added '
                           'as ${selectedCategoryNotifier.value == CategoryType.income ? "income" : "expense"}',
