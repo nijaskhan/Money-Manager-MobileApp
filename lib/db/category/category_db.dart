@@ -26,7 +26,7 @@ class CategoryDB implements CategoryDbFunc{
   Future<void> insertCategory(CategoryModel value) async{
     final _categoryDB = await Hive.openBox<CategoryModel>(categoryDbName);
     // _categoryDB.add(value);  the id is auto-adding in this line
-    _categoryDB.put(value.id, value);   //we are setting the id aas our given id from value.id
+    _categoryDB.put(value.id, value);   //we are setting the id as our given id from value.id
     refreshCategoryUI();
   }
 
