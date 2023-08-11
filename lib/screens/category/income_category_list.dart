@@ -13,7 +13,7 @@ class IncomeCategoryList extends StatelessWidget {
         builder: (BuildContext ctx, List<CategoryModel> newList, Widget? _) {
           if(newList.isEmpty){
             return Center(
-              child: Image.network('http://www.fam-kurtze.de/nodata.png'),
+              child: Image.asset('assets/images/no_data_found.png'),
             );
           }
           return ListView.separated(
