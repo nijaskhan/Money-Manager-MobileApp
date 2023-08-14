@@ -17,6 +17,11 @@ class ScreenTransaction extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: transactionListNotifier,
         builder: (BuildContext ctx, List<TransactionModel> newList, Widget? _){
+          if(newList.isEmpty){
+            return Center(
+              child: Image.asset('assets/images/not-found.png'),
+            );
+          }
           return ListView.separated(
               itemBuilder: (ctx, index) {
                 final _transaction = newList[index];
