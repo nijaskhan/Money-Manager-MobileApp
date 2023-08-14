@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:money_management_project/db/category/category_db.dart';
+import 'package:money_management_project/db/transaction/transaction_db.dart';
 import 'package:money_management_project/models/category/category_model.dart';
+import 'package:money_management_project/models/transactions/transaction_model.dart';
 
 // ignore: camel_case_types
 class ScreenAddTransactions extends StatefulWidget {
@@ -16,13 +20,19 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
   String? _selectedCategory;
   DateTime? _selectedDate;
   CategoryType? _selectedCategoryType;
+  CategoryModel? _selectedCategoryModel;
+
+  final _purposeTextEdit = TextEditingController();
+  final _amountTextEdit = TextEditingController();
+
+  bool validationBool = false;
 /*
-purpose
-Date
-Amount
-Income/Expense
-Category Type
- */
+  purpose
+  Date
+  Amount
+  Income/Expense
+  Category Type
+*/
 
   @override
   void initState() {
@@ -33,6 +43,11 @@ Category Type
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.of(context).pop();
+        }, icon: const Icon(Icons.arrow_back)),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -48,6 +63,7 @@ Category Type
               height: 30,
             ),
             TextFormField(
+              controller: _purposeTextEdit,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'purpose',
@@ -57,6 +73,7 @@ Category Type
               height: 20,
             ),
             TextFormField(
+              controller: _amountTextEdit,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -72,7 +89,8 @@ Category Type
                   final _selectedDateTemp = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
-                      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                      firstDate:
+                          DateTime.now().subtract(const Duration(days: 30)),
                       lastDate: DateTime.now());
                   if (_selectedDateTemp == null) {
                     return;
@@ -131,6 +149,9 @@ Category Type
                     return DropdownMenuItem(
                       value: e.id,
                       child: Text(e.name),
+                      onTap: (){
+                        _selectedCategoryModel=e;
+                      },
                     );
                   }).toList(),
                   onChanged: (selectedCategory) {
@@ -145,16 +166,84 @@ Category Type
             const SizedBox(
               height: 10,
             ),
+                Center(
+                  child: validationBool == true
+                      ? const Text(
+                    "all fields required",
+                    style: TextStyle(color: Colors.red),
+                  )
+                      : const Text(""),
+                ),
             Center(
               child: ElevatedButton(
                   onPressed: () {
-                    print("submit clicked");
+                    addTransaction();
                   },
                   child: const Text('submit')),
-            )
+            ),
           ]),
         ),
       ),
     );
+  }
+
+  void addTransaction() {
+    final _purpose = _purposeTextEdit.text;
+    final _amount = _amountTextEdit.text;
+    final _parsedAmount = double.tryParse(_amount);
+
+    // validation
+    if (_parsedAmount == null) {
+      setState(() {
+        validationBool = true;
+      });
+      return;
+    }
+    if (_purpose == null) {
+      setState(() {
+        validationBool = true;
+      });
+      return;
+    }
+    if(_selectedDate==null){
+      setState(() {
+        validationBool = true;
+      });
+      return;
+    }
+    if(_selectedCategory==null){
+      setState(() {
+        validationBool = true;
+      });
+      return;
+    }
+    if(_selectedCategoryModel==null){
+      return;
+    }
+
+    final _transaction = TransactionModel(
+        purpose: _purpose,
+        amount: _parsedAmount,
+        date: _selectedDate!,
+        type: _selectedCategoryType!,
+        category: _selectedCategoryModel!
+    );
+    
+    TransactionDB().addTransaction(_transaction);
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      margin: EdgeInsets.all(15),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 3),
+      content: Text("Trasaction added",
+          style: const TextStyle(fontWeight: FontWeight.bold)),
+      backgroundColor: Colors.green.shade300,
+    ));
+
+    Navigator.of(context).pop();
+
+    setState(() {
+      validationBool=false;
+    });
   }
 }
