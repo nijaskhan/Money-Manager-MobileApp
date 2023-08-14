@@ -9,7 +9,7 @@ ValueNotifier<List<TransactionModel>> transactionListNotifier = ValueNotifier([]
 abstract class TransactionDbFunc{
   Future<void>addTransaction(TransactionModel value);
   Future<List<TransactionModel>>getTransaction();
-//   implement the abstract class and write the function
+  Future<void>deleteTransaction(String id);
 }
 
 class TransactionDB implements TransactionDbFunc{
@@ -22,6 +22,7 @@ class TransactionDB implements TransactionDbFunc{
 
   Future<void> transactionRefresher() async{
     final _list = await getTransaction();
+    _list.sort((first, second) => second.date.compareTo(first.date),);
     transactionListNotifier.value.clear();
     transactionListNotifier.value.addAll(_list);
     transactionListNotifier.notifyListeners();
@@ -37,5 +38,12 @@ class TransactionDB implements TransactionDbFunc{
   Future<List<TransactionModel>>getTransaction() async{
     final _db = await Hive.openBox<TransactionModel>(transactionDbName);
     return _db.values.toList();
+  }
+
+  @override
+  Future<void> deleteTransaction(String id) async{
+    final _db = await Hive.openBox<TransactionModel>(transactionDbName);
+    await _db.delete(id);
+    transactionRefresher();
   }
 }

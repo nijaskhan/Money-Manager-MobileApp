@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:money_management_project/db/category/category_db.dart';
 import 'package:money_management_project/db/transaction/transaction_db.dart';
@@ -26,16 +24,10 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
   final _amountTextEdit = TextEditingController();
 
   bool validationBool = false;
-/*
-  purpose
-  Date
-  Amount
-  Income/Expense
-  Category Type
-*/
 
   @override
   void initState() {
+    CategoryDB.instance.refreshCategoryUI();
     _selectedCategoryType = CategoryType.income;
     super.initState();
   }
@@ -44,54 +36,53 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pop();
-        }, icon: const Icon(Icons.arrow_back)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Center(
-              child: Text(
-                'Add Transaction',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
+                child: Text(
+                  'Add Transaction',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            TextFormField(
-              controller: _purposeTextEdit,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'purpose',
+              SizedBox(height: 30),
+              TextFormField(
+                controller: _purposeTextEdit,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'purpose',
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: _amountTextEdit,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.currency_rupee),
-                hintText: 'amount',
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _amountTextEdit,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.currency_rupee),
+                  hintText: 'amount',
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            TextButton.icon(
+              const SizedBox(height: 25),
+              TextButton.icon(
                 onPressed: () async {
                   final _selectedDateTemp = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: 30)),
-                      lastDate: DateTime.now());
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate:
+                        DateTime.now().subtract(const Duration(days: 30)),
+                    lastDate: DateTime.now(),
+                  );
                   if (_selectedDateTemp == null) {
                     return;
                   } else {
@@ -101,45 +92,53 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
                   }
                 },
                 icon: const Icon(Icons.date_range),
-                label: Text(_selectedDate == null
-                    ? 'pick the date'
-                    : _selectedDate.toString())),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(children: [
-                  Radio(
-                      value: CategoryType.income,
-                      groupValue: _selectedCategoryType,
-                      onChanged: (selectedCategoryType) {
-                        setState(() {
-                          _selectedCategoryType = selectedCategoryType;
-                          _selectedCategory = null;
-                        });
-                      }),
-                  const Text('Income')
-                ]),
-                Row(children: [
-                  Radio(
-                      value: CategoryType.expense,
-                      groupValue: _selectedCategoryType,
-                      onChanged: (selectedCategoryType) {
-                        setState(() {
-                          _selectedCategoryType = selectedCategoryType;
-                          _selectedCategory = null;
-                        });
-                      }),
-                  const Text('Expense')
-                ])
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: DropdownButton(
-                  hint: const Text('select Category'),
+                label: Text(
+                  _selectedDate == null
+                      ? 'pick the date'
+                      : _selectedDate.toString(),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        value: CategoryType.income,
+                        groupValue: _selectedCategoryType,
+                        onChanged: (selectedCategoryType) {
+                          setState(() {
+                            _selectedCategoryType = selectedCategoryType;
+                            _selectedCategory = null;
+                          });
+                        },
+                      ),
+                      const Text('Income'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: CategoryType.expense,
+                        groupValue: _selectedCategoryType,
+                        onChanged: (selectedCategoryType) {
+                          setState(() {
+                            _selectedCategoryType = selectedCategoryType;
+                            _selectedCategory = null;
+                          });
+                        },
+                      ),
+                      const Text('Expense'),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: DropdownButton(
+                  hint: Text('select Category'),
                   value: _selectedCategory,
                   items: (_selectedCategoryType == CategoryType.income
                           ? incomeCategoryListListener
@@ -149,8 +148,8 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
                     return DropdownMenuItem(
                       value: e.id,
                       child: Text(e.name),
-                      onTap: (){
-                        _selectedCategoryModel=e;
+                      onTap: () {
+                        _selectedCategoryModel = e;
                       },
                     );
                   }).toList(),
@@ -161,27 +160,28 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
                     setState(() {
                       _selectedCategory = selectedCategory;
                     });
-                  }),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-                Center(
-                  child: validationBool == true
-                      ? const Text(
-                    "all fields required",
-                    style: TextStyle(color: Colors.red),
-                  )
-                      : const Text(""),
+                  },
                 ),
-            Center(
-              child: ElevatedButton(
+              ),
+              const SizedBox(height: 15),
+              Center(
+                child: validationBool == true
+                    ? const Text(
+                        "all fields required",
+                        style: TextStyle(color: Colors.red),
+                      )
+                    : const Text(""),
+              ),
+              Center(
+                child: ElevatedButton(
                   onPressed: () {
                     addTransaction();
                   },
-                  child: const Text('submit')),
-            ),
-          ]),
+                  child: const Text('submit'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -205,19 +205,19 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
       });
       return;
     }
-    if(_selectedDate==null){
+    if (_selectedDate == null) {
       setState(() {
         validationBool = true;
       });
       return;
     }
-    if(_selectedCategory==null){
+    if (_selectedCategory == null) {
       setState(() {
         validationBool = true;
       });
       return;
     }
-    if(_selectedCategoryModel==null){
+    if (_selectedCategoryModel == null) {
       return;
     }
 
@@ -226,24 +226,24 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
         amount: _parsedAmount,
         date: _selectedDate!,
         type: _selectedCategoryType!,
-        category: _selectedCategoryModel!
-    );
-    
+        category: _selectedCategoryModel!);
+
     TransactionDB().addTransaction(_transaction);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      margin: EdgeInsets.all(15),
+      margin: const EdgeInsets.all(15),
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 3),
-      content: Text("Trasaction added",
-          style: const TextStyle(fontWeight: FontWeight.bold)),
+      content: const Text("Transaction added",
+          style: TextStyle(fontWeight: FontWeight.bold)),
       backgroundColor: Colors.green.shade300,
     ));
 
     Navigator.of(context).pop();
+    TransactionDB().transactionRefresher();
 
     setState(() {
-      validationBool=false;
+      validationBool = false;
     });
   }
 }
